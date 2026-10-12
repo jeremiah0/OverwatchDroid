@@ -1,0 +1,3 @@
+# Steam configs can hold login tokens / account data — kept on disk, not in history.
+*.vdf
+.DS_Store

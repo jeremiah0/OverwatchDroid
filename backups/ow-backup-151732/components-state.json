@@ -1,0 +1,16 @@
+{
+  "active": {},
+  "queued": {},
+  "profiles": {
+    "2357570": {
+      "dxvk": "dxvk-3.1.1-linux.wcp",
+      "vkd3d": "vkd3d-proton-3.0.1-linux.wcp",
+      "fex": "FEXCore-2610-linux.wcp"
+    }
+  },
+  "profiledComponents": [
+    "dxvk",
+    "fex",
+    "vkd3d"
+  ]
+}
