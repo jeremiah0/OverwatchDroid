@@ -5,7 +5,7 @@
       Replace the device's Overwatch ntdll/fex rows with the repo's, and the
       device's Overwatch entry in game-environment.json with the repo's.
   owconfig.py stock-ntdll DEVICE_TSV OUT_TSV STOCK_HASH STOCK_SOURCE
-      Point the Overwatch ntdll row at Valve's original ntdll.dll.
+      Point any Overwatch ntdll rows at Valve's original ntdll.dll.
   owconfig.py env DEVICE_ENV REPO_ENV OUT_ENV
       Just the game-environment.json part of merge, for DroidDeck's master copy.
   owconfig.py settings DEVICE_INI REPO_INI OUT_INI
@@ -66,11 +66,12 @@ def stock_ntdll(dev_tsv, out_tsv, stock_hash, stock_source):
             fields[5], fields[6] = stock_hash, stock_source
             changed += 1
         out.append("\t".join(fields))
-    if not changed:
-        sys.exit("no Overwatch ntdll row found; nothing to uninstall")
     with open(out_tsv, "w") as f:
-        f.write("\n".join(out) + "\n")
-    print(f"pointed {changed} Overwatch ntdll row(s) at the stock ntdll.dll")
+        f.write("".join(l + "\n" for l in out))
+    if changed:
+        print(f"desired.tsv: pointed {changed} Overwatch ntdll row(s) at the stock ntdll.dll")
+    else:
+        print("desired.tsv: no Overwatch ntdll rows, left as is")
 
 
 def settings(dev_ini, repo_ini, out_ini):

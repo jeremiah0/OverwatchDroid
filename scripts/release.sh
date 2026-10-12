@@ -2,7 +2,7 @@
 # Build a release archive from a clean, committed tree and tag it.
 #   release.sh v1.0.0 "short description"
 # Output: dist/overwatch-droid-<version>.tar.gz and .zip, plus .sha256 files.
-# backups/ is left out via export-ignore in .gitattributes (same as GitHub's tag downloads).
+# The archives hold exactly the tagged files, the same as GitHub's tag downloads.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+- One-step install: `bash install.sh` from the top folder checks everything, shows what will change and asks
+  before touching the device. `--dry-run`, `--uninstall` and the new `--yes` still work; `--help` lists them.
+- The installer offers to close DroidDeck instead of stopping, and lets you pick when several devices or
+  DroidDeck installs are found.
+- Plain fixes in error messages: missing adb or python3, USB debugging not allowed, no root, wrong Proton build.
+- `--uninstall` works when DroidDeck has dropped the Overwatch `ntdll` rows, and says when there's nothing to undo.
+- README reorganised for new users: requirements with install commands, a three-step install, recommended
+  settings, and a troubleshooting table.
+
 ## v1.3.0 — 2026-10-12
 
 - FEX vector TSO off for Overwatch (`FEX_VECTORTSOENABLED=0`) to save CPU. Main TSO stays on.
