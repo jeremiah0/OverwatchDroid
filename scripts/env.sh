@@ -69,7 +69,7 @@ fi
 
 adbsu() { adb -s "$SERIAL" shell "su -c '$*'"; }
 # Print a device file as root (empty output if it doesn't exist).
-adbcat() { adb -s "$SERIAL" exec-out "su -c 'cat \"$1\" 2>/dev/null'"; }
+adbcat() { adb -s "$SERIAL" exec-out "su -c 'cat \"$1\" 2>/dev/null; true'"; }
 
 adbsu id 2>/dev/null | grep -q 'uid=0' ||
   die "no root access on $SERIAL. In Magisk, open Superuser and allow Shell (or tap Grant if a prompt showed up on the device), then rerun."
