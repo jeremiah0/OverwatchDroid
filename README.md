@@ -43,30 +43,27 @@ bash scripts/install.sh --uninstall
 
 Everything the installer changes gets backed up on the device to `/data/local/tmp/ow-backup-<timestamp>/`.
 
-## Tips
+## DroidDeck settings
 
-**Close other apps before playing.** If Overwatch closes mid-match without an error, Android ran out of memory and killed DroidDeck.
-You can check with `adb logcat -d | grep lowmemorykiller`. On an 11 GB Thor this happened 4 to 6 minutes into a match.
-Low graphics settings and closing background apps (browser, YouTube, emulators, other games) fix most of it.
+These are the settings on the Thor this was tested on. Open DroidDeck, then pull up Settings under Play Steam.
+Most of these take effect the next time you start Steam.
 
-**Give Overwatch the fastest CPU core.** By default DroidDeck puts Steam on the fastest core and games on the others.
-To swap that, open DroidDeck, pull up Settings under Play Steam, go to Session > Performance, and set:
+| Where | Setting | Value |
+|---|---|---|
+| Session > Performance | Override Steam's core choice | Off |
+| Session > Performance | Game cores | All (cpu0 to cpu7) |
+| Session > Performance | Hold the GPU at its top clock | On |
+| Session > Performance | gamescope: realtime GPU queue | On |
+| Session > Performance | droiddeck-ntsync (experimental) | On |
+| Settings sheet | Upscaler | Snapdragon GSR (quality), sharpness 75% |
+| Settings sheet | Frame generation | Win-FG 2× |
+| Display | Resolution | 1280x720 |
+| Components | GPU driver | Mesa Turnip v26.3.0-20261012 |
 
-- Client cores: cpu0, cpu1, cpu2
-- Game cores: cpu3 to cpu7
+Overwatch uses a lot of CPU through FEX, so give it every core. Frame generation doubles the 30 fps cap to 60 on screen,
+at the cost of some GPU and a little input lag.
 
-This takes effect the next time you start Steam.
-
-**Use Snapdragon GSR in DroidDeck.** In DroidDeck's display settings, change the upscaler from Linear to
-Snapdragon GSR (quality). It sharpens the upscale to the screen and runs outside the game.
-
-**Quit from Overwatch's menu.** Overwatch only saves settings when you quit normally.
-If the game gets killed or you close DroidDeck, setting changes are lost.
-
-**Warm up shaders.** Before playing, load custom game code `929PJ`. It compiles shaders and loads hero abilities
-so you don't get stutters the first time you see each effect in a match.
-
-## Graphics settings
+## Overwatch settings
 
 The installer adds these to `Documents/Overwatch/Settings/Settings_v0.ini` in Overwatch's Wine prefix, under `[Render.13]`.
 Anything else in that file is kept. These are the values Overwatch itself saves for each option.
@@ -76,7 +73,6 @@ Anything else in that file is kept. These are the values Overwatch itself saves 
 | Graphics preset | `GFXPresetLevel` | `1` (Low) |
 | Graphics API | `GraphicsAPI` | `Dx12` |
 | Render scale | `UseCustomWorldScale`, `MinWorldScale` | `1`, `50.000000` (50%) |
-| High quality upsampling | `HighQualityUpsample` | `2` (AMD FSR 1.0) |
 | Frame rate cap | `UseCustomFrameRates`, `DesiredFrameRate` | `1`, `30` |
 | Texture quality | `TextureDetail` | `1` (Low) |
 | Model detail | `ModelQuality` | `1` (Low) |
@@ -88,7 +84,24 @@ Anything else in that file is kept. These are the values Overwatch itself saves 
 | Anti-alias quality | `AADetail` | `0` (Off) |
 | Texture filtering | `MaxAnisotropy` | `1` |
 
-To change any of these, change them in game and quit from Overwatch's menu. Running the installer again puts these values back.
+Set one more thing yourself in game: Options > Video > Graphics Quality > High Quality Upsampling > **AMD FSR 1.0**.
+FSR 2.2 costs more on this GPU.
+
+Overwatch only saves settings when you quit from its menu. If the game gets killed or you close DroidDeck,
+changes are lost. Running the installer again puts the values above back.
+
+## Tips
+
+**Close other apps before playing.** If Overwatch closes mid-match without an error, Android ran out of memory and killed DroidDeck.
+You can check with `adb logcat -d | grep lowmemorykiller`. Low settings and closing background apps
+(browser, YouTube, emulators, other games) fix most of it. Screen recording uses memory too.
+
+**Keep it cool.** The CPU runs at 90 to 95 °C in a match. Set the fan and performance mode to max.
+
+**Turn off the Steam overlay for Overwatch.** In Steam: Overwatch > Properties > General. It saves some memory and CPU.
+
+**Warm up shaders.** Before playing, load custom game code `929PJ`. It compiles shaders and loads hero abilities
+so you don't get stutters or slow texture loading the first time you see each effect in a match.
 
 ## DroidDeck variants
 

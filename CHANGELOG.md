@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.2.1 — 2026-10-12
+
+- Installer no longer sets High Quality Upsampling. The value it set was FSR 2.2; the README now says to
+  pick AMD FSR 1.0 in game.
+- README: DroidDeck settings table from the tested Thor (all cores to the game, GPU clock held, realtime
+  gamescope queue, ntsync, Snapdragon GSR, Win-FG 2×) and tips on heat and the Steam overlay.
+
 ## v1.2.0 — 2026-10-12
 
 - Lower graphics settings: every quality option at its lowest, 50% render scale with AMD FSR 1.0,
