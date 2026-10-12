@@ -2,7 +2,7 @@
 # Build a release archive from a clean, committed tree and tag it.
 #   release.sh v1.0.0 "short description"
 # Output: dist/overwatch-droid-<version>.tar.gz and .zip, plus .sha256 files.
-# Excludes backups/ (personal device state) — the archive is just what's needed to install.
+# backups/ is left out via export-ignore in .gitattributes (same as GitHub's tag downloads).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -18,9 +18,8 @@ git rev-parse -q --verify "refs/tags/$version" >/dev/null && { echo "tag $versio
 git tag -a "$version" -m "$message"
 
 mkdir -p dist
-paths=(README.md CHANGELOG.md SHA256SUMS .gitattributes store patches config scripts)
-git archive --format=tar.gz --prefix="$name/" -o "dist/$name.tar.gz" "$version" "${paths[@]}"
-git archive --format=zip    --prefix="$name/" -o "dist/$name.zip"    "$version" "${paths[@]}"
+git archive --format=tar.gz --prefix="$name/" -o "dist/$name.tar.gz" "$version"
+git archive --format=zip    --prefix="$name/" -o "dist/$name.zip"    "$version"
 (cd dist && for f in "$name.tar.gz" "$name.zip"; do shasum -a 256 "$f" > "$f.sha256"; done)
 
 ls -la dist/$name.*

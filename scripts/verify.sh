@@ -1,15 +1,13 @@
 #!/usr/bin/env bash
-# Compare repo SHA256SUMS against what is on the Thor right now.
+# Compare repo SHA256SUMS against the device's store, and show the active Overwatch ntdll row.
 set -euo pipefail
 source "$(dirname "$0")/env.sh"
 cd "$REPO"
 
 device=$(adbsu "cd $COMPONENTS/store && sha256sum $(awk '{print $2}' SHA256SUMS | tr '\n' ' ')" | tr -d '\r')
-if diff <(sed 's#  \./#  #' SHA256SUMS) <(echo "$device" | sed 's#  \./#  #') ; then
+if diff SHA256SUMS <(echo "$device"); then
   echo "store: device matches repo"
 else
-  echo "store: DIFFERS (< repo, > device)"; exit 1
+  die "store: DIFFERS (< repo, > device)"
 fi
-
-# The wiring that actually puts the patched ntdll into Proton for Overwatch.
-adbsu "grep \"^$APPID\" $COMPONENTS/desired.tsv | grep ntdll" | tr -d '\r'
+adbcat "$COMPONENTS/desired.tsv" | grep "^$APPID	" | grep '	ntdll	' | cut -f1-4,6 || echo "no Overwatch ntdll row"

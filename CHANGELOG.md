@@ -10,4 +10,6 @@ First snapshot of the working Overwatch 2 setup on the AYN Thor.
 - DroidDeck wiring: `desired.tsv` (Overwatch rows: pr47 ntdll, d2rfix28 FEX, dxvk 3.1.1,
   vkd3d-proton 3.0a) and `game-environment.json` (FEX TSO + vector TSO on, `FEX_SMCCHECKS=mtrack`)
 - `patches/ntdll-pr47.bytediff` (161 bytes) to re-apply the patch to a new Proton build
-- Scripts: `push.sh` install, `pull.sh` refresh, `verify.sh` hash check, `bytediff.py`
+- `install.sh`: checks root, DroidDeck and the exact Proton build, backs up, then merges only
+  Overwatch's ntdll/fex rows and env entry. `--dry-run` and `--uninstall` (back to stock ntdll)
+- Maintainer scripts: `pull.sh`, `verify.sh`, `release.sh`, `bytediff.py`

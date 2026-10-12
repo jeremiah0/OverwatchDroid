@@ -1,2 +1,3 @@
 *.dll binary
 *.so binary
+backups/ export-ignore
