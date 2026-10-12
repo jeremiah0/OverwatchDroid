@@ -5,8 +5,8 @@ Run Overwatch 2 on Android with DroidDeck, Proton Experimental (ARM64) and FEX. 
 One command patches Overwatch and nothing else:
 
 - Replaces Proton's `ntdll.dll` with the pr47 patched version
-- Installs the d2rfix28 build of FEX with Overwatch's FEX settings (vector TSO off)
-- Sets Overwatch's graphics to Low, DirectX 12, 50% render scale and a 30 fps cap
+- Installs the d2rfix28 build of FEX with Overwatch's FEX settings (TSO on, vector TSO off)
+- Sets Overwatch's graphics to Low, DirectX 12, 50% render scale, FSR off and a 30 fps cap
 
 Other games aren't affected, and every file it replaces is backed up on the device first.
 
@@ -78,8 +78,12 @@ Overwatch uses a lot of CPU through FEX, so give it every core. Frame generation
 
 ### In game
 
-After installing, check Options > Video > Graphics Quality > High Quality Upsampling. It should say AMD FSR 1.0.
-If it doesn't, pick AMD FSR 1.0 and quit from Overwatch's menu. FSR 2.2 costs more on this GPU.
+The installer turns High Quality Upsampling off (Default). FSR costs GPU time on every frame, and DroidDeck's
+Snapdragon GSR already sharpens the final image. It also turns Reduce Buffering off, which lets the CPU work
+on the next frame while the GPU draws this one. That helps because FEX makes Overwatch CPU-bound, at the cost
+of a little input lag. If you'd rather have the lag back down, turn Reduce Buffering on in Options > Video.
+
+After installing, Options > Video > Graphics Quality > High Quality Upsampling should say Default.
 
 Overwatch only saves settings when you quit from its menu. If the game gets killed or you close DroidDeck,
 changes are lost. Running the installer again puts its graphics settings back.
@@ -87,7 +91,7 @@ changes are lost. Running the installer again puts its graphics settings back.
 <details>
 <summary>Graphics settings the installer applies</summary>
 
-These go in `Documents/Overwatch/Settings/Settings_v0.ini` in Overwatch's Wine prefix, under `[Render.13]`.
+These go in `Documents/Overwatch/Settings/Settings_v0.ini` in Overwatch's Wine prefix, mostly under `[Render.13]`.
 Anything else in the file is kept. The values are the ones Overwatch saves for each option.
 
 | In-game option | Setting | Value |
@@ -95,7 +99,7 @@ Anything else in the file is kept. The values are the ones Overwatch saves for e
 | Graphics preset | `GFXPresetLevel` | `1` (Low) |
 | Graphics API | `GraphicsAPI` | `Dx12` |
 | Render scale | `UseCustomWorldScale`, `MinWorldScale` | `1`, `50.000000` (50%) |
-| High quality upsampling | `HighQualityUpsample` | `1` (meant to be AMD FSR 1.0) |
+| High quality upsampling | `HighQualityUpsample` | `0` (Default, no FSR) |
 | Frame rate cap | `UseCustomFrameRates`, `DesiredFrameRate` | `1`, `30` |
 | Texture quality | `TextureDetail` | `1` (Low) |
 | Model detail | `ModelQuality` | `1` (Low) |
@@ -106,6 +110,8 @@ Anything else in the file is kept. The values are the ones Overwatch saves for e
 | Local reflections | `LocalReflections` | `0` (Off) |
 | Anti-alias quality | `AADetail` | `0` (Off) |
 | Texture filtering | `MaxAnisotropy` | `1` |
+| Reduce buffering | `CpuForceSyncEnabled` | `0` (Off) |
+| Intro video | `ShowIntro` in `[Cinematics.1]` | `0` (skipped) |
 
 </details>
 

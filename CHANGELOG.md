@@ -8,6 +8,8 @@
   DroidDeck installs are found.
 - Plain fixes in error messages: missing adb or python3, USB debugging not allowed, no root, wrong Proton build.
 - `--uninstall` works when DroidDeck has dropped the Overwatch `ntdll` rows, and says when there's nothing to undo.
+- Faster settings, built on the tested Thor's current ones: High Quality Upsampling off (Default, no FSR),
+  Reduce Buffering off, intro video skipped.
 - README reorganised for new users: requirements with install commands, a three-step install, recommended
   settings, and a troubleshooting table.
 
