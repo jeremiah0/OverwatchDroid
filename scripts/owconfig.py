@@ -88,6 +88,8 @@ def settings(dev_ini, repo_ini, out_ini):
             continue
         start = [l.strip() for l in lines].index(section) + 1
         end = next((i for i in range(start, len(lines)) if lines[i].strip().startswith("[")), len(lines))
+        while end > start and not lines[end - 1].strip():  # new keys go above the section's trailing blank lines
+            end -= 1
         for key, new in keys.items():
             hit = next((i for i in range(start, end) if lines[i].split("=", 1)[0].strip() == key), None)
             if hit is None:
