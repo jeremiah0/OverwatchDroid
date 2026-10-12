@@ -18,7 +18,7 @@ git rev-parse -q --verify "refs/tags/$version" >/dev/null && { echo "tag $versio
 git tag -a "$version" -m "$message"
 
 mkdir -p dist
-paths=(README.md SHA256SUMS .gitattributes store patches config scripts)
+paths=(README.md CHANGELOG.md SHA256SUMS .gitattributes store patches config scripts)
 git archive --format=tar.gz --prefix="$name/" -o "dist/$name.tar.gz" "$version" "${paths[@]}"
 git archive --format=zip    --prefix="$name/" -o "dist/$name.zip"    "$version" "${paths[@]}"
 (cd dist && for f in "$name.tar.gz" "$name.zip"; do shasum -a 256 "$f" > "$f.sha256"; done)
