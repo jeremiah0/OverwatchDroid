@@ -38,6 +38,12 @@ Then:
 
 If more than one device is connected (or an emulator), pick one: `ANDROID_SERIAL=<serial> bash scripts/install.sh`.
 
+### Recommended: warm up shaders before playing
+
+Load the Overwatch 2 custom game **`929PJ`** before you play (join it by code from the Custom Games browser).
+It pre-compiles shaders and loads hero abilities, which fixes most of the stuttering and frame drops
+you'd otherwise hit the first time each effect shows up in a real match.
+
 ### Which DroidDeck install it patches
 
 DroidDeck ships the same app under several package names, each a separate install with its own data:
