@@ -63,6 +63,12 @@ Device defaults to serial `65636070`; override with `ANDROID_SERIAL=...`. Needs 
 - `scripts/push.sh` — install `store/` dirs to the device. `--config` also overwrites `desired.tsv` and
   `game-environment.json`. Whatever it replaces is saved to `/data/local/tmp/ow-push-<timestamp>/` first.
 - `scripts/bytediff.py` — make/apply byte diffs.
+- `scripts/release.sh VERSION` — tag and build `dist/overwatch-droid-VERSION.{tar.gz,zip}` (no `backups/`).
+
+### Installing from a release archive
+
+Unpack, plug in the Thor, then run `scripts/push.sh --config` from the unpacked folder (or plain `push.sh` to
+leave the device's `desired.tsv` / `game-environment.json` alone).
 
 ### Rolling back to stock ntdll
 
