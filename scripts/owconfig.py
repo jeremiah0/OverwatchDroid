@@ -6,6 +6,9 @@
       device's Overwatch entry in game-environment.json with the repo's.
   owconfig.py stock-ntdll DEVICE_TSV OUT_TSV STOCK_HASH STOCK_SOURCE
       Point the Overwatch ntdll row at Valve's original ntdll.dll.
+  owconfig.py settings DEVICE_INI REPO_INI OUT_INI
+      Overwatch's Settings_v0.ini: set the repo's keys (Low preset, DX12) and keep
+      every other line of the device's file. Creates it if the device has none.
 
 desired.tsv columns: appid, proton name, proton version, component, path, sha256, source.
 """
@@ -64,10 +67,46 @@ def stock_ntdll(dev_tsv, out_tsv, stock_hash, stock_source):
     print(f"pointed {changed} Overwatch ntdll row(s) at the stock ntdll.dll")
 
 
+def settings(dev_ini, repo_ini, out_ini):
+    def parse(text):
+        section, out = None, {}
+        for line in text.splitlines():
+            line = line.strip()
+            if line.startswith("[") and line.endswith("]"):
+                section = line
+            elif "=" in line and section:
+                out.setdefault(section, {})[line.split("=", 1)[0].strip()] = line
+        return out
+
+    wanted = parse(open(repo_ini, encoding="utf-8-sig").read())
+    text = open(dev_ini, encoding="utf-8-sig").read() if os.path.exists(dev_ini) else ""
+    lines = text.splitlines()
+
+    for section, keys in wanted.items():
+        if section not in [l.strip() for l in lines]:
+            lines += [section] + list(keys.values())
+            continue
+        start = [l.strip() for l in lines].index(section) + 1
+        end = next((i for i in range(start, len(lines)) if lines[i].strip().startswith("[")), len(lines))
+        for key, new in keys.items():
+            hit = next((i for i in range(start, end) if lines[i].split("=", 1)[0].strip() == key), None)
+            if hit is None:
+                lines.insert(end, new)
+                end += 1
+            else:
+                lines[hit] = new
+
+    with open(out_ini, "w", newline="\r\n") as f:
+        f.write("\n".join(lines) + "\n")
+    print("Settings_v0.ini: " + ", ".join(v.strip() for k in wanted.values() for v in k.values()))
+
+
 if __name__ == "__main__":
     if len(sys.argv) == 8 and sys.argv[1] == "merge":
         merge(*sys.argv[2:])
     elif len(sys.argv) == 6 and sys.argv[1] == "stock-ntdll":
         stock_ntdll(*sys.argv[2:])
+    elif len(sys.argv) == 5 and sys.argv[1] == "settings":
+        settings(*sys.argv[2:])
     else:
         sys.exit(__doc__)

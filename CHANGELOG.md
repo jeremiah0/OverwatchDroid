@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.1.0 — 2026-10-12
+
+- Installer sets Overwatch's `Settings_v0.ini` to the **Low preset + DirectX 12** (other settings kept).
+  Overwatch was getting killed before it could save its own settings, so in-game changes never stuck.
+- Installer writes the pr47 `ntdll.dll` directly into Proton Experimental (ARM64) as well. DroidDeck can
+  drop hand-added `ntdll` rows from `desired.tsv` and delete their store folders, but it leaves Proton's file alone.
+  `--uninstall` puts the stock file back the same way.
+- `verify.sh` reports what's actually in effect: Proton's `ntdll.dll`, store folders (missing is OK), Overwatch rows.
+- README: stability section. Mid-match closes are Android's low-memory killer, not a game crash.
+- Repo cleanup: the reference device's backups, full `desired.tsv` and logs are no longer published;
+  `config/game-environment.json` only has Overwatch's entry.
+
 ## v1.0.1 — 2026-10-12
 
 - Installer finds DroidDeck by its files instead of assuming the antutu package

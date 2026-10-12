@@ -3,10 +3,11 @@
 Gets Overwatch 2 (Steam app `2357570`) running on Android handhelds through DroidDeck + Proton Experimental (ARM64) + FEX.
 Tested on an AYN Thor.
 
-It installs two things into DroidDeck, for Overwatch only:
+It sets up, for Overwatch only:
 
 - a patched Wine `ntdll.dll` (pr47) for Proton Experimental (ARM64)
 - the d2rfix28 FEX build, plus the FEX settings Overwatch runs with (TSO + vector TSO on, `FEX_SMCCHECKS=mtrack`)
+- Overwatch's own graphics settings: **Low preset + DirectX 12**
 
 Other games' settings are left alone.
 
@@ -18,6 +19,7 @@ You need:
   Any variant works (standard, antutu, ludashi, pubg); the installer finds it.
 - **Proton Experimental (ARM64)** build **`experimental-11.0-20261008-arm64`** installed in DroidDeck's Steam.
   The patch only fits this exact build; the installer checks and refuses anything else.
+- Overwatch 2 installed and **launched once** (so its Wine prefix exists and the settings can be written)
 - A Mac or Linux computer with `adb` and `python3` (on Windows, use WSL — untested)
 - USB debugging on, with this computer authorized, and **root allowed for Shell** in Magisk
 
@@ -38,11 +40,29 @@ Then:
 
 If more than one device is connected (or an emulator), pick one: `ANDROID_SERIAL=<serial> bash scripts/install.sh`.
 
+## Stability: it's about memory
+
+If Overwatch closes mid-match with no error, Android killed DroidDeck because the device ran out of memory.
+It isn't a game crash, so Overwatch writes no error report. You can confirm it with
+`adb logcat -d | grep lowmemorykiller`, which shows a line like `Kill '<droiddeck package>' … device is low on memory`.
+On an 11 GB Thor this happened about 4–6 minutes into matches.
+
+Things that help:
+
+- **Low preset + DX12.** The installer writes these into Overwatch's `Settings_v0.ini`. Overwatch on this setup
+  usually gets killed before it can save settings itself, which is also why in-game changes seem not to stick.
+  Low textures matter most, because the GPU shares system RAM.
+- **Close every other app before playing** (browsers, YouTube, emulators, other games, controller apps).
+  Android kills them first under pressure, but many restart in the background and take the memory back.
+- **Don't run adb root commands while playing.** Each `su` call starts the Magisk app (~100 MB).
+
 ### Recommended: warm up shaders before playing
 
 Load the Overwatch 2 custom game **`929PJ`** before you play (join it by code from the Custom Games browser).
 It pre-compiles shaders and loads hero abilities, which fixes most of the stuttering and frame drops
 you'd otherwise hit the first time each effect shows up in a real match.
+
+## Details
 
 ### Which DroidDeck install it patches
 
@@ -65,12 +85,15 @@ DROIDDECK_PACKAGE=com.droiddeck.launcher bash scripts/install.sh
 
 ### What the installer does
 
-- Checks for root, finds your DroidDeck install, checks the exact Proton build, and that Proton's current `ntdll.dll` is either stock or already pr47
-- Backs up your `desired.tsv`, `game-environment.json`, and any store folders it replaces to
-  `/data/local/tmp/ow-backup-<timestamp>/` on the device
-- Copies the three store folders into `droiddeck-components/store/`
-- In `desired.tsv`: replaces only Overwatch's `ntdll` and `fex` rows. In `game-environment.json`: replaces only Overwatch's entry
-- Verifies the installed files by SHA-256
+- Checks for root, finds your DroidDeck install, checks the exact Proton build, and that Proton's current
+  `ntdll.dll` is either stock or already pr47
+- Backs up everything it changes to `/data/local/tmp/ow-backup-<timestamp>/` on the device
+- Writes the pr47 `ntdll.dll` **directly into Proton Experimental (ARM64)**
+- Copies the store folders into `droiddeck-components/store/` and sets Overwatch's `ntdll` and `fex` rows in
+  `desired.tsv`, and Overwatch's entry in `game-environment.json`. Nothing else in those files changes.
+- Sets `GFXPresetLevel = "1"` (Low) and `GraphicsAPI = "Dx12"` under `[Render.13]` in Overwatch's
+  `Documents/Overwatch/Settings/Settings_v0.ini`, keeping any other settings in that file
+- Shows what's in effect afterwards (`scripts/verify.sh`)
 
 ### Uninstall
 
@@ -78,36 +101,24 @@ DROIDDECK_PACKAGE=com.droiddeck.launcher bash scripts/install.sh
 bash scripts/install.sh --uninstall
 ```
 
-Points Overwatch back at Valve's stock `ntdll.dll`. The d2rfix28 FEX rows stay. To fully revert,
-copy the files from the `/data/local/tmp/ow-backup-<timestamp>/` folder the install printed back into place.
+Puts Valve's stock `ntdll.dll` back into Proton and points Overwatch's ntdll row at it. FEX and the game
+settings stay. To revert something else, copy it back from the `/data/local/tmp/ow-backup-<timestamp>/` folder.
 
-## What's in the repo
-
-| Path | What it is |
-|---|---|
-| `store/ntdll-pr47-experimental-11.0-20261008/` | Patched `ntdll.dll` (pr47) |
-| `store/original-Proton_Experimental_ARM64-experimental-11.0-20261008-arm64-ntdll/` | Valve's original `ntdll.dll` from the same build (for uninstall) |
-| `store/FEXCore-2610-d2rfix28-linux/` | d2rfix28 FEX (`libwow64fex`, `libarm64ecfex` .dll/.so) |
-| `patches/ntdll-pr47.bytediff` | Byte-level diff original → pr47 (161 bytes) |
-| `config/desired-2357570.tsv` | Overwatch rows from the reference device's `desired.tsv` |
-| `config/game-environment.json` | Reference device's per-game env vars |
-| `SHA256SUMS` | Hashes of everything under `store/` |
-| `backups/` | Reference device's pre-patch state (git only, not in release downloads) |
-
-## How DroidDeck wires it
+### How DroidDeck wires it
 
 DroidDeck keeps components in
 `/data/user/0/<droiddeck package>/files/linuxfs/root/.local/share/droiddeck-components/`.
-Before each launch it reads `desired.tsv` (columns: appid, Proton name, Proton version, component, path, sha256, source)
-and copies the listed store files into the Proton install. Overwatch's ntdll row:
+`desired.tsv` lists files to copy into each Proton install (columns: appid, Proton name, Proton version,
+component, path, sha256, source). The `source` paths are inside DroidDeck's Linux root (`/root/...`), so the
+same rows work for every variant.
 
-```
-2357570  Proton Experimental (ARM64)  experimental-11.0-20261008-arm64  ntdll  files/lib/wine/aarch64-windows/ntdll.dll  fb6022ab…392f  /root/.local/share/droiddeck-components/store/ntdll-pr47-experimental-11.0-20261008/…/ntdll.dll
-```
+DroidDeck regenerates `desired.tsv` from its own component list at times (seen at session start). That
+**drops hand-added `ntdll` rows** and then deletes the store folders nothing points at. The `ntdll.dll`
+already inside Proton is left alone, which is why the installer writes it there directly. A Steam update or
+"verify files" on Proton Experimental (ARM64) brings back the stock file. After that, rerun the installer if
+the build is still `experimental-11.0-20261008-arm64`. A newer build needs a new patch (see below).
 
-The `source` paths are inside DroidDeck's Linux root (`/root/...`), so the same rows work for every variant.
-
-## The ntdll patch
+### The ntdll patch
 
 | File offset | Size | Section | Likely purpose |
 |---|---|---|---|
@@ -124,9 +135,22 @@ python3 scripts/bytediff.py apply path/to/stock/ntdll.dll patches/ntdll-pr47.byt
 
 It refuses if any original byte doesn't match, which is likely on a new build, so a mismatch fails loudly instead of producing a broken DLL.
 
-## Maintainer scripts
+## What's in the repo
 
-- `scripts/verify.sh` — compare repo hashes with a device; show the active Overwatch ntdll row. Read-only.
+| Path | What it is |
+|---|---|
+| `store/ntdll-pr47-experimental-11.0-20261008/` | Patched `ntdll.dll` (pr47) |
+| `store/original-Proton_Experimental_ARM64-experimental-11.0-20261008-arm64-ntdll/` | Valve's original `ntdll.dll` from the same build (for uninstall) |
+| `store/FEXCore-2610-d2rfix28-linux/` | d2rfix28 FEX (`libwow64fex`, `libarm64ecfex` .dll/.so) |
+| `config/desired-2357570.tsv` | Overwatch's `desired.tsv` rows |
+| `config/game-environment.json` | Overwatch's FEX environment |
+| `config/Settings_v0.ini` | Overwatch graphics settings the installer applies (Low + DX12) |
+| `patches/ntdll-pr47.bytediff` | Byte-level diff original → pr47 (161 bytes) |
+| `SHA256SUMS` | Hashes of everything under `store/` |
+
+### Maintainer scripts
+
+- `scripts/verify.sh` — show Proton's `ntdll.dll`, the store folders and the Overwatch rows on a device. Read-only.
 - `scripts/pull.sh` — refresh `store/` and `config/` from a device, regenerate `SHA256SUMS`.
 - `scripts/release.sh VERSION` — tag and build `dist/overwatch-droid-VERSION.{tar.gz,zip}`.
-- `scripts/bytediff.py`, `scripts/owconfig.py` — byte diffs and the config merge used by the installer.
+- `scripts/bytediff.py`, `scripts/owconfig.py`, `scripts/find-droiddeck.sh` — byte diffs, the config merges and DroidDeck detection used by the installer.
