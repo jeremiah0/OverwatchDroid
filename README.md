@@ -5,7 +5,7 @@ Patch for running Overwatch 2 on Android through DroidDeck, Proton Experimental 
 The installer changes these for Overwatch only:
 
 - Replaces Proton's `ntdll.dll` with the pr47 patched version
-- Installs the d2rfix28 build of FEX and Overwatch's FEX settings
+- Installs the d2rfix28 build of FEX and Overwatch's FEX settings, with vector TSO off
 - Sets Overwatch's graphics to Low and DirectX 12
 
 Other games aren't affected.
@@ -73,6 +73,7 @@ Anything else in that file is kept. These are the values Overwatch itself saves 
 | Graphics preset | `GFXPresetLevel` | `1` (Low) |
 | Graphics API | `GraphicsAPI` | `Dx12` |
 | Render scale | `UseCustomWorldScale`, `MinWorldScale` | `1`, `50.000000` (50%) |
+| High quality upsampling | `HighQualityUpsample` | `1` (meant to be AMD FSR 1.0) |
 | Frame rate cap | `UseCustomFrameRates`, `DesiredFrameRate` | `1`, `30` |
 | Texture quality | `TextureDetail` | `1` (Low) |
 | Model detail | `ModelQuality` | `1` (Low) |
@@ -84,11 +85,29 @@ Anything else in that file is kept. These are the values Overwatch itself saves 
 | Anti-alias quality | `AADetail` | `0` (Off) |
 | Texture filtering | `MaxAnisotropy` | `1` |
 
-Set one more thing yourself in game: Options > Video > Graphics Quality > High Quality Upsampling > **AMD FSR 1.0**.
-FSR 2.2 costs more on this GPU.
+After installing, check Options > Video > Graphics Quality > High Quality Upsampling. It should say AMD FSR 1.0.
+If it doesn't, pick AMD FSR 1.0 and quit from Overwatch's menu. FSR 2.2 costs more on this GPU.
 
 Overwatch only saves settings when you quit from its menu. If the game gets killed or you close DroidDeck,
 changes are lost. Running the installer again puts the values above back.
+
+## FEX settings
+
+The installer sets these for Overwatch only, in DroidDeck's per-game environment (`game-environment.json`).
+
+| Setting | Value | What it does |
+|---|---|---|
+| `FEX_TSOENABLED` | `1` | Keeps x86 memory ordering. Overwatch needs it. |
+| `FEX_VECTORTSOENABLED` | `0` | Skips memory ordering for SIMD loads and stores. Saves CPU. |
+| `FEX_SMCCHECKS` | `mtrack` | Detects self-modifying code by tracking memory writes |
+| `FEX_MULTIBLOCK` | `1` | Translates bigger chunks of code at once |
+| `FEX_X87REDUCEDPRECISION` | `1` | Faster x87 floating point |
+
+If you get crashes or glitches that started after installing, turn vector TSO back on (`1`) in DroidDeck's
+per-game settings for Overwatch.
+
+DroidDeck keeps a master copy of this file in its app folder and copies it into the Linux root at every
+session start, so the installer writes both. Editing only the copy in the Linux root gets undone.
 
 ## Tips
 
@@ -128,6 +147,8 @@ The installer adds Overwatch's `ntdll` and `fex` rows to it and copies the files
 
 DroidDeck sometimes rewrites `desired.tsv` and removes the `ntdll` rows, then deletes their store folders.
 It doesn't touch the `ntdll.dll` that's already in Proton, so the installer also writes it there directly.
+Per-game environment variables have two copies: `files/game-environment.json` in DroidDeck's app folder is the
+master, and `linuxfs/root/.config/droiddeck/game-environment.json` is overwritten from it at session start.
 If Steam updates or verifies Proton Experimental (ARM64), the stock file comes back and you need to run the installer again.
 
 ## The ntdll patch

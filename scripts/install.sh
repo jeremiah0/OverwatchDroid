@@ -36,6 +36,7 @@ esac
 mkdir -p "$work/stage/store"
 adbcat "$COMPONENTS/desired.tsv" > "$work/desired.device.tsv"
 adbcat "$GAME_ENV" > "$work/env.device.json"
+adbcat "$APP_ENV" > "$work/env.app.json"
 
 # Overwatch's Wine user folder: in DroidDeck's own Steam, or a Steam library on shared/SD storage.
 # It only exists once Overwatch has been launched.
@@ -52,6 +53,7 @@ if [[ $mode == --uninstall ]]; then
 else
   python3 -I scripts/owconfig.py merge "$work/desired.device.tsv" "config/desired-$APPID.tsv" \
     "$work/env.device.json" config/game-environment.json "$work/stage" "${STORE_DIRS[*]}"
+  python3 -I scripts/owconfig.py env "$work/env.app.json" config/game-environment.json "$work/stage/game-environment.app.json"
   dirs=("${STORE_DIRS[@]}")
   want=$NTDLL_PR47
   if [[ -n "$ow_settings" ]]; then
@@ -85,7 +87,7 @@ fi
 
 cat > "$work/stage/apply.sh" <<APPLY
 set -e
-C="$COMPONENTS"; E="$GAME_ENV"; S="$stage"; B="$bak"; P="$PROTON_DIR/$NTDLL_REL"
+C="$COMPONENTS"; E="$GAME_ENV"; A="$APP_ENV"; S="$stage"; B="$bak"; P="$PROTON_DIR/$NTDLL_REL"
 ref="\$C"; [ -d "\$ref" ] || ref="\$(dirname "\$C")"
 owner=\$(stat -c %u:%g "\$ref")
 label=\$(ls -Zd "\$ref" | awk '{print \$1}')
@@ -104,6 +106,14 @@ done
 cat "\$S/desired.tsv" > "\$C/desired.tsv"
 cat "\$S/game-environment.json" > "\$E"
 fix "\$C/desired.tsv" "\$E"
+
+# DroidDeck's master copy of the per-game environment; it overwrites \$E at session start.
+if [ -f "\$S/game-environment.app.json" ]; then
+  [ -f "\$A" ] && cp -p "\$A" "\$B/game-environment.app.json"
+  ao=\$(stat -c %u:%g "\$(dirname "\$A")"); al=\$(ls -Zd "\$(dirname "\$A")" | awk '{print \$1}')
+  cat "\$S/game-environment.app.json" > "\$A"
+  chown \$ao "\$A"; chcon \$al "\$A" 2>/dev/null || true; chmod 600 "\$A"
+fi
 
 # Overwriting in place keeps the file's owner, mode and SELinux label.
 cp -p "\$P" "\$B/proton-ntdll.dll"

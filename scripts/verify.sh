@@ -15,7 +15,7 @@ esac
 status=0
 for d in "${STORE_DIRS[@]}"; do
   files=$(grep "  \./$d/" SHA256SUMS | awk '{print $2}' | tr '\n' ' ')
-  device=$(adbsu "cd $COMPONENTS/store 2>/dev/null && [ -d $d ] && sha256sum $files" | tr -d '\r')
+  device=$(adbsu "cd $COMPONENTS/store 2>/dev/null && [ -d $d ] && sha256sum $files" | tr -d '\r' || true)
   if [[ -z "$device" ]]; then
     echo "store $d: not present"
   elif diff -q <(grep "  \./$d/" SHA256SUMS) <(echo "$device") >/dev/null; then
@@ -27,4 +27,10 @@ done
 
 rows=$(adbcat "$COMPONENTS/desired.tsv" | awk -F'\t' -v a="$APPID" '$1==a && ($4=="ntdll" || $4=="fex")' | wc -l | tr -d ' ')
 echo "desired.tsv: $rows Overwatch ntdll/fex rows"
+for f in "$APP_ENV" "$GAME_ENV"; do
+  v=$(adbcat "$f" | python3 -I -c 'import json,sys
+try: g=json.load(sys.stdin)["games"]["2357570"]; print("TSO", g.get("FEX_TSOENABLED"), "vector TSO", g.get("FEX_VECTORTSOENABLED"))
+except Exception: print("no Overwatch entry")')
+  echo "FEX ($(basename "$(dirname "$f")")/$(basename "$f")): $v"
+done
 exit $status

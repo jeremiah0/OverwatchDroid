@@ -6,6 +6,8 @@
       device's Overwatch entry in game-environment.json with the repo's.
   owconfig.py stock-ntdll DEVICE_TSV OUT_TSV STOCK_HASH STOCK_SOURCE
       Point the Overwatch ntdll row at Valve's original ntdll.dll.
+  owconfig.py env DEVICE_ENV REPO_ENV OUT_ENV
+      Just the game-environment.json part of merge, for DroidDeck's master copy.
   owconfig.py settings DEVICE_INI REPO_INI OUT_INI
       Overwatch's Settings_v0.ini: set the repo's keys (Low preset, DX12) and keep
       every other line of the device's file. Creates it if the device has none.
@@ -39,6 +41,12 @@ def merge(dev_tsv, repo_tsv, dev_env, repo_env, out_dir, store_dirs):
     with open(os.path.join(out_dir, "desired.tsv"), "w") as f:
         f.write("\n".join(kept + ours) + "\n")
 
+    merge_env(dev_env, repo_env, os.path.join(out_dir, "game-environment.json"))
+
+    print(f"desired.tsv: kept {len(kept)} rows, set {len(ours)} Overwatch ntdll/fex rows")
+
+
+def merge_env(dev_env, repo_env, out_env):
     try:
         env = json.load(open(dev_env))
     except (OSError, ValueError):
@@ -46,10 +54,8 @@ def merge(dev_tsv, repo_tsv, dev_env, repo_env, out_dir, store_dirs):
     env.setdefault("version", 1)
     env.setdefault("shared", {})
     env.setdefault("games", {})[APPID] = json.load(open(repo_env))["games"][APPID]
-    with open(os.path.join(out_dir, "game-environment.json"), "w") as f:
+    with open(out_env, "w") as f:
         json.dump(env, f, separators=(",", ":"))
-
-    print(f"desired.tsv: kept {len(kept)} rows, set {len(ours)} Overwatch ntdll/fex rows")
 
 
 def stock_ntdll(dev_tsv, out_tsv, stock_hash, stock_source):
@@ -108,6 +114,8 @@ if __name__ == "__main__":
         merge(*sys.argv[2:])
     elif len(sys.argv) == 6 and sys.argv[1] == "stock-ntdll":
         stock_ntdll(*sys.argv[2:])
+    elif len(sys.argv) == 5 and sys.argv[1] == "env":
+        merge_env(*sys.argv[2:])
     elif len(sys.argv) == 5 and sys.argv[1] == "settings":
         settings(*sys.argv[2:])
     else:

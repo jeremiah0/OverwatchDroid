@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.3.0 — 2026-10-12
+
+- FEX vector TSO off for Overwatch (`FEX_VECTORTSOENABLED=0`) to save CPU. Main TSO stays on.
+- Installer also writes DroidDeck's master `game-environment.json` in the app folder. Before, it only wrote the
+  copy in the Linux root, which DroidDeck overwrites at every session start, so FEX settings didn't stick.
+- High Quality Upsampling set to `1` (meant to be AMD FSR 1.0; the README says to check the in-game label).
+- `verify.sh` no longer stops when DroidDeck has deleted the store folders, and shows Overwatch's TSO settings.
+- README: FEX settings table.
+
 ## v1.2.1 — 2026-10-12
 
 - Installer no longer sets High Quality Upsampling. The value it set was FSR 2.2; the README now says to

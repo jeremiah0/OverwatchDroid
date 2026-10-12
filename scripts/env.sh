@@ -62,4 +62,6 @@ else
 fi
 COMPONENTS=$LINUXFS/.local/share/droiddeck-components
 GAME_ENV=$LINUXFS/.config/droiddeck/game-environment.json
+# DroidDeck's master copy. It's copied over GAME_ENV at every session start, so both get written.
+APP_ENV=$(dirname "$(dirname "$LINUXFS")")/game-environment.json
 PROTON_DIR="$LINUXFS/$PROTON_SUBDIR"
