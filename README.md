@@ -57,6 +57,9 @@ To swap that, open DroidDeck, pull up Settings under Play Steam, go to Session >
 
 This takes effect the next time you start Steam.
 
+**Use Snapdragon GSR in DroidDeck.** In DroidDeck's display settings, change the upscaler from Linear to
+Snapdragon GSR (quality). It sharpens the upscale to the screen and runs outside the game.
+
 **Quit from Overwatch's menu.** Overwatch only saves settings when you quit normally.
 If the game gets killed or you close DroidDeck, setting changes are lost.
 
@@ -66,21 +69,26 @@ so you don't get stutters the first time you see each effect in a match.
 ## Graphics settings
 
 The installer adds these to `Documents/Overwatch/Settings/Settings_v0.ini` in Overwatch's Wine prefix, under `[Render.13]`.
-Anything else in that file is kept.
+Anything else in that file is kept. These are the values Overwatch itself saves for each option.
 
-| Setting | Value |
-|---|---|
-| `GFXPresetLevel` | `1` (Low) |
-| `GraphicsAPI` | `Dx12` |
-| `TextureDetail` | `1` (Low) |
-| `ModelQuality` | `1` (Low) |
-| `ShaderQuality` | `1` (Low) |
-| `LightQuality` | `0` (Low) |
-| `EffectsQuality` | `0` (Low) |
-| `DirectionalShadowDetail` | `0` |
-| `LocalReflections` | `0` (off) |
-| `AADetail` | `0` (off) |
-| `MaxAnisotropy` | `1` |
+| In-game option | Setting | Value |
+|---|---|---|
+| Graphics preset | `GFXPresetLevel` | `1` (Low) |
+| Graphics API | `GraphicsAPI` | `Dx12` |
+| Render scale | `UseCustomWorldScale`, `MinWorldScale` | `1`, `50.000000` (50%) |
+| High quality upsampling | `HighQualityUpsample` | `2` (AMD FSR 1.0) |
+| Frame rate cap | `UseCustomFrameRates`, `DesiredFrameRate` | `1`, `30` |
+| Texture quality | `TextureDetail` | `1` (Low) |
+| Model detail | `ModelQuality` | `1` (Low) |
+| Shader quality | `ShaderQuality` | `1` (Low) |
+| Lighting quality | `LightQuality` | `0` (Low) |
+| Effects detail | `EffectsQuality` | `1` (Low) |
+| Shadow detail | `DirectionalShadowDetail` | `1` (Low) |
+| Local reflections | `LocalReflections` | `0` (Off) |
+| Anti-alias quality | `AADetail` | `0` (Off) |
+| Texture filtering | `MaxAnisotropy` | `1` |
+
+To change any of these, change them in game and quit from Overwatch's menu. Running the installer again puts these values back.
 
 ## DroidDeck variants
 

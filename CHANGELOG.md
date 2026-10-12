@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.2.0 — 2026-10-12
+
+- Lower graphics settings: every quality option at its lowest, 50% render scale with AMD FSR 1.0,
+  and a 30 fps cap. The values are the ones Overwatch saves itself.
+- README rewritten to be shorter. Added tips for giving Overwatch the fastest CPU core and using
+  Snapdragon GSR in DroidDeck, and corrected the note on saving settings (Overwatch saves when you
+  quit from its menu).
+
 ## v1.1.0 — 2026-10-12
 
 - Installer sets Overwatch's `Settings_v0.ini` to the **Low preset + DirectX 12** (other settings kept).
