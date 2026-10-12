@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.4.0 — 2026-10-12
 
 - One-step install: `bash install.sh` from the top folder checks everything, shows what will change and asks
   before touching the device. `--dry-run`, `--uninstall` and the new `--yes` still work; `--help` lists them.
