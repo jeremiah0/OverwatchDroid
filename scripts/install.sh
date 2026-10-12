@@ -120,7 +120,7 @@ else
   else
     echo "  Graphics   skipped: launch Overwatch once, quit from its menu, then run this again"
   fi
-  echo "Other games aren't touched."
+  echo "The ntdll.dll is shared by every game on $PROTON_NAME; the rest is for Overwatch only."
   question="Install?"
 fi
 echo "Files that get replaced are backed up on the device to $bak"

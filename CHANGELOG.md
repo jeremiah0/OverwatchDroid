@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- README and installer no longer say other games are unaffected: the patched `ntdll.dll` is shared by every
+  game on Proton Experimental (ARM64). The README links the patch's source, GameNative/proton-wine#47.
+
 ## v1.4.0 — 2026-10-12
 
 - One-step install: `bash install.sh` from the top folder checks everything, shows what will change and asks

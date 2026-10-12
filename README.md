@@ -2,13 +2,17 @@
 
 Run Overwatch 2 on Android with DroidDeck, Proton Experimental (ARM64) and FEX. Tested on an AYN Thor.
 
-One command patches Overwatch and nothing else:
+One command sets up Overwatch:
 
 - Replaces Proton's `ntdll.dll` with the pr47 patched version
 - Installs the d2rfix28 build of FEX with Overwatch's FEX settings (TSO on, vector TSO off)
 - Sets Overwatch's graphics to Low, DirectX 12, 50% render scale, FSR off and a 30 fps cap
 
-Other games aren't affected, and every file it replaces is backed up on the device first.
+The FEX build and settings and the graphics settings apply to Overwatch only. The patched `ntdll.dll` goes into
+Proton Experimental (ARM64) itself, so every game you run with that Proton uses it. The
+[patch](https://github.com/GameNative/proton-wine/pull/47) only changes what ARM64EC tells FEX about memory
+mappings and CPU flags, so other games are unlikely to notice. If one misbehaves, `bash install.sh --uninstall`
+puts the stock file back. Every file the installer replaces is backed up on the device first.
 
 ## Before you start
 
