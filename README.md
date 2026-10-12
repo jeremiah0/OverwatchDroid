@@ -14,7 +14,8 @@ Other games' settings are left alone.
 
 You need:
 
-- A **rooted** device (Magisk) with DroidDeck set up and Steam signed in
+- A **rooted** device (Magisk) with [DroidDeck](https://github.com/Droid-Deck/DroidDeck) set up and Steam signed in.
+  Any variant works (standard, antutu, ludashi, pubg); the installer finds it.
 - **Proton Experimental (ARM64)** build **`experimental-11.0-20261008-arm64`** installed in DroidDeck's Steam.
   The patch only fits this exact build; the installer checks and refuses anything else.
 - A Mac or Linux computer with `adb` and `python3` (on Windows, use WSL — untested)
@@ -37,9 +38,28 @@ Then:
 
 If more than one device is connected (or an emulator), pick one: `ANDROID_SERIAL=<serial> bash scripts/install.sh`.
 
+### Which DroidDeck install it patches
+
+DroidDeck ships the same app under several package names, each a separate install with its own data:
+
+| Variant | Package |
+|---|---|
+| standard | `com.droiddeck.launcher` |
+| antutu | `com.antutu.benchmark.full` |
+| ludashi | `com.ludashi.benchmark` |
+| pubg | `com.tencent.ig` |
+
+The installer looks for DroidDeck's files rather than a package name, so it picks up whichever you
+have (and ignores a real PUBG Mobile install). If you have more than one variant, it uses the one with the
+required Proton build installed. If several have it, it asks you to choose:
+
+```sh
+DROIDDECK_PACKAGE=com.droiddeck.launcher bash scripts/install.sh
+```
+
 ### What the installer does
 
-- Checks for root, DroidDeck, the exact Proton build, and that Proton's current `ntdll.dll` is either stock or already pr47
+- Checks for root, finds your DroidDeck install, checks the exact Proton build, and that Proton's current `ntdll.dll` is either stock or already pr47
 - Backs up your `desired.tsv`, `game-environment.json`, and any store folders it replaces to
   `/data/local/tmp/ow-backup-<timestamp>/` on the device
 - Copies the three store folders into `droiddeck-components/store/`
@@ -71,7 +91,7 @@ copy the files from the `/data/local/tmp/ow-backup-<timestamp>/` folder the inst
 ## How DroidDeck wires it
 
 DroidDeck keeps components in
-`/data/user/0/com.antutu.benchmark.full/files/linuxfs/root/.local/share/droiddeck-components/`.
+`/data/user/0/<droiddeck package>/files/linuxfs/root/.local/share/droiddeck-components/`.
 Before each launch it reads `desired.tsv` (columns: appid, Proton name, Proton version, component, path, sha256, source)
 and copies the listed store files into the Proton install. Overwatch's ntdll row:
 
@@ -79,7 +99,7 @@ and copies the listed store files into the Proton install. Overwatch's ntdll row
 2357570  Proton Experimental (ARM64)  experimental-11.0-20261008-arm64  ntdll  files/lib/wine/aarch64-windows/ntdll.dll  fb6022ab…392f  /root/.local/share/droiddeck-components/store/ntdll-pr47-experimental-11.0-20261008/…/ntdll.dll
 ```
 
-If your DroidDeck uses a different package name, set `DROIDDECK_PACKAGE=...`.
+The `source` paths are inside DroidDeck's Linux root (`/root/...`), so the same rows work for every variant.
 
 ## The ntdll patch
 

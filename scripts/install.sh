@@ -16,8 +16,7 @@ stage=/data/local/tmp/ow-stage-$stamp
 bak=/data/local/tmp/ow-backup-$stamp
 work=$(mktemp -d); trap 'rm -rf "$work"' EXIT
 
-echo "device: $SERIAL"
-adbsu id | grep -q 'uid=0' || die "no root. Allow root for Shell in Magisk and rerun."
+echo "device: $SERIAL, DroidDeck: $APP"
 adbsu "test -d $LINUXFS" || die "DroidDeck Linux root not found at $LINUXFS"
 if [[ $mode != --dry-run ]] && adb -s "$SERIAL" shell pidof "$APP" >/dev/null; then
   die "DroidDeck is running. Close it (swipe away or force stop), then rerun."

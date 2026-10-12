@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.0.1 — 2026-10-12
+
+- Installer finds DroidDeck by its files instead of assuming the antutu package
+  (`com.antutu.benchmark.full`), so the standard (`com.droiddeck.launcher`), ludashi and pubg
+  variants work too. With several variants installed it prefers the one that has the required
+  Proton build, or asks you to pick with `DROIDDECK_PACKAGE`.
+- Clearer errors when root is missing or DroidDeck isn't found.
+
 ## v1.0.0 — 2026-10-12
 
 First snapshot of the working Overwatch 2 setup on the AYN Thor.
