@@ -147,8 +147,7 @@ I made this together with **Claude Opus** (Anthropic's AI, through Claude Code),
 
 - **Me ([jeremiah0](https://github.com/jeremiah0)):** got Overwatch running on my Thor (the repo started as a
   snapshot of that setup), did all the testing on real hardware, like playing matches and checking what each
-  setting really does (I caught that one value meant FSR 2.2, not 1.0), found the DroidDeck settings, the vector
-  TSO tweak and the `929PJ` tip, and handled the commits and releases.
+  setting really does, found the DroidDeck settings, the vector TSO tweak and the `929PJ` tip, and handled the commits and releases.
 - **Claude:** wrote the scripts, edited and improved the README and changelog, and traced how DroidDeck handles
   components and per-game settings by reading its files and source. It also analysed the ntdll patch and traced
   the patch and the FEX build back to their sources.
