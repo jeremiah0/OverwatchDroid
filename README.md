@@ -6,7 +6,7 @@ One command sets up Overwatch:
 
 - Replaces Proton's `ntdll.dll` with the pr47 patched version
 - Installs the d2rfix28 build of FEX with Overwatch's FEX settings (TSO on, vector TSO off)
-- Sets Overwatch's graphics to Low, DirectX 12, 50% render scale, FSR off and a 30 fps cap
+- Sets Overwatch's graphics to Low, DirectX 12, 50% render scale, FSR off and a 90 fps cap
 
 The FEX build and settings and the graphics settings apply to Overwatch only. The patched `ntdll.dll` goes into
 Proton Experimental (ARM64) itself, so every game you run with that Proton uses it. The
@@ -94,8 +94,8 @@ Most of them take effect the next time you start Steam.
 | Display | Resolution | 1280x720 |
 | Components | GPU driver | Mesa Turnip v26.3.0-20261012 |
 
-Overwatch uses a lot of CPU through FEX, so give it every core. Frame generation doubles the 30 fps cap to
-60 on screen, at the cost of some GPU and a little input lag.
+Overwatch uses a lot of CPU through FEX, so give it every core. Frame generation doubles the frames Overwatch
+renders on screen, at the cost of some GPU and a little input lag.
 
 ### In game
 
@@ -121,7 +121,7 @@ Anything else in the file is kept. The values are the ones Overwatch saves for e
 | Graphics API | `GraphicsAPI` | `Dx12` |
 | Render scale | `UseCustomWorldScale`, `MinWorldScale` | `1`, `50.000000` (50%) |
 | High quality upsampling | `HighQualityUpsample` | `0` (Default, no FSR) |
-| Frame rate cap | `UseCustomFrameRates`, `DesiredFrameRate` | `1`, `30` |
+| Frame rate cap | `UseCustomFrameRates`, `DesiredFrameRate` | `1`, `90` |
 | Texture quality | `TextureDetail` | `1` (Low) |
 | Model detail | `ModelQuality` | `1` (Low) |
 | Shader quality | `ShaderQuality` | `1` (Low) |

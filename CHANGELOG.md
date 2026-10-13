@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Frame rate cap raised from 30 to 90 fps.
 - README: "Read this first" section on the unreviewed ntdll patch, Blizzard account risk and single-device
   testing, and a Credits section with thanks and the licenses of the bundled files.
 - README and installer no longer say other games are unaffected: the patched `ntdll.dll` is shared by every

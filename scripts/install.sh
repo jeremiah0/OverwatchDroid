@@ -116,7 +116,7 @@ else
   echo "  ntdll.dll  $(describe "$ntdll") -> pr47"
   echo "  FEX        d2rfix28, with Overwatch's FEX settings"
   if [[ -n "$ow_settings" ]]; then
-    echo "  Graphics   Low preset, DirectX 12, 50% render scale, FSR off, 30 fps cap"
+    echo "  Graphics   Low preset, DirectX 12, 50% render scale, FSR off, 90 fps cap"
   else
     echo "  Graphics   skipped: launch Overwatch once, quit from its menu, then run this again"
   fi
