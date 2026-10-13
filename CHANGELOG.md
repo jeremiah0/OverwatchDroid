@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- README: "Read this first" section on the unreviewed ntdll patch, Blizzard account risk and single-device
+  testing, and a Credits section with thanks and the licenses of the bundled files.
 - README and installer no longer say other games are unaffected: the patched `ntdll.dll` is shared by every
   game on Proton Experimental (ARM64). The README links the patch's source, GameNative/proton-wine#47.
 

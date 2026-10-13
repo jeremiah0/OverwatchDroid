@@ -14,6 +14,23 @@ Proton Experimental (ARM64) itself, so every game you run with that Proton uses 
 mappings and CPU flags, so other games are unlikely to notice. If one misbehaves, `bash install.sh --uninstall`
 puts the stock file back. Every file the installer replaces is backed up on the device first.
 
+## Read this first
+
+This is a community workaround, not an official fix. Know these before you try it:
+
+- **The patched `ntdll.dll` hasn't been reviewed.** It's a 161-byte binary patch to Valve's file, adding about 160 bytes
+  of code. It looks like a port of [proton-wine PR #47](https://github.com/GameNative/proton-wine/pull/47)'s
+  ntdll changes, but it isn't built from that PR's source, and its origin isn't known. It runs inside every
+  game on Proton Experimental (ARM64). The exact bytes it changes are in `patches/ntdll-pr47.bytediff`.
+- **Your Blizzard account is at your own risk.** Overwatch has anti-cheat, and this runs it under an emulator
+  with a modified system DLL. No bans are known, but very few people have tried it. Consider a spare account first.
+- **It's only been tested on one device:** an AYN Thor with DroidDeck 0.4.0 and one Proton build. Other
+  Snapdragon devices should work, but nobody has confirmed it, and the recommended settings are tuned for the Thor.
+
+The installer itself is careful. It only writes inside DroidDeck's app folder and `/data/local/tmp`, refuses
+to run unless the Proton build and `ntdll.dll` match known hashes, shows what it will change and asks first,
+and backs up everything it replaces.
+
 ## Before you start
 
 You need:
@@ -224,3 +241,27 @@ Maintainer scripts:
 - `scripts/pull.sh`: copies the files from a device into the repo
 - `scripts/release.sh VERSION`: tags a release and builds the zip
 - `scripts/bytediff.py`, `scripts/owconfig.py`, `scripts/find-droiddeck.sh`, `scripts/env.sh`: used by the installer
+
+## Credits
+
+This only works because of other people's work. Thank you all <3
+
+- **[Dmage22](https://github.com/Dmage22)** wrote the Wine fixes for Blizzard's protected loaders
+  ([GameNative/proton-wine #47](https://github.com/GameNative/proton-wine/pull/47)) and the d2rfix FEX builds
+  ([Dmage22/FEX-D2](https://github.com/Dmage22/FEX-D2)) that make Overwatch 2 start at all.
+- **FrontMage and aanze** tracked down the FEX bugs behind Blizzard games in
+  [FEX-Emu/FEX #5328](https://github.com/FEX-Emu/FEX/issues/5328), which the d2rfix fixes build on.
+- **[FEX-Emu](https://github.com/FEX-Emu/FEX)** for the x86 emulator everything runs on.
+- **[Valve](https://github.com/ValveSoftware/Proton)** for Proton and its ARM64 builds, and the
+  **[Wine](https://www.winehq.org/)** project underneath it.
+- **[GameNative](https://github.com/GameNative/proton-wine)** for the proton-wine fork the ntdll fixes target.
+- **[DroidDeck](https://github.com/Droid-Deck/DroidDeck)** for bringing Steam and Proton to Android.
+- **[DXVK](https://github.com/doitsujin/dxvk)**, **[vkd3d-proton](https://github.com/HansKristian-Work/vkd3d-proton)**
+  and **[Mesa](https://mesa3d.org/)**'s Turnip driver for the graphics stack.
+
+Licenses of the bundled files:
+
+| Files | License | Source |
+|---|---|---|
+| `store/*ntdll*/` | LGPL-2.1-or-later (Wine) | Valve's Proton Experimental (ARM64) `experimental-11.0-20261008-arm64`; the patch is in `patches/ntdll-pr47.bytediff` |
+| `store/FEXCore-2610-d2rfix28-linux/` | MIT (FEX) | [Dmage22/FEX-D2 d2rfix28 build 37](https://github.com/Dmage22/FEX-D2/releases/tag/fexcore-2610-d2rfix28-37), commit `15a5bba`. The DLLs are byte-identical to that release. |
