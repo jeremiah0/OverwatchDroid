@@ -263,23 +263,20 @@ Maintainer scripts:
 This repo is a collaboration between **Jeremiah Ownby** ([jeremiah0](https://github.com/jeremiah0)) and
 **Claude Opus** (Anthropic's AI model, through Claude Code). Every commit is marked `Co-Authored-By: Claude Opus`.
 
-**Human (Jeremiah):**
+**Myself:**
 - Got Overwatch 2 running on a rooted AYN Thor with DroidDeck. The repo started as a snapshot of that working setup.
 - All testing on real hardware: playing matches, judging performance and stability, checking what each
   in-game setting actually does (for example, catching that a value meant FSR 2.2, not 1.0).
 - The tested DroidDeck settings, the vector TSO experiment, and the `929PJ` shader warm-up tip.
 - Every decision: what to change, what to ship, the 90 fps cap, turning FSR off, and when to release.
-- The performance video, the account-risk wording, and talking with the community.
+
 
 **AI (Claude Opus):**
 - Wrote the scripts: the installer, `verify.sh`, `pull.sh`, `release.sh`, `owconfig.py` and `bytediff.py`.
-- Wrote and edited the README and changelog.
-- Worked out how DroidDeck handles components and per-game settings by reading its files and source,
+- Edited and improved the README and changelog.
+- Traced and explored how DroidDeck handles components and per-game settings by reading its files and source,
   analysed the ntdll byte patch, and traced the patch and FEX build back to their sources.
-- Proposed settings (Reduce Buffering off, keeping the skipped intro) and checked the bundled FEX files
-  against their official release.
-- Drafted the upstream reports to proton-wine, FEX and DroidDeck, which Jeremiah reviewed before they were posted.
-
+  
 The fixes that make the game run at all came from the people and projects below.
 
 ### Thanks
