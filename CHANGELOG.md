@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- README: link to a video of it running on the Thor.
 - Frame rate cap raised from 30 to 90 fps. The README explains it's a ceiling; expect 30 to 60 in matches.
 - README: fuller account-risk note (Steam Deck status, anti-cheat under Proton, the 2018 Linux bans Blizzard reversed).
 - README: "Read this first" section on the unreviewed ntdll patch, Blizzard account risk and single-device

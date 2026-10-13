@@ -2,6 +2,10 @@
 
 Run Overwatch 2 on Android with DroidDeck, Proton Experimental (ARM64) and FEX. Tested on an AYN Thor.
 
+[![Overwatch Droid final performance update](https://i.ytimg.com/vi/IrvZEAGfkqI/hqdefault.jpg)](https://www.youtube.com/watch?v=IrvZEAGfkqI)
+
+▶ [Watch it running on the Thor](https://www.youtube.com/watch?v=IrvZEAGfkqI)
+
 One command sets up Overwatch:
 
 - Replaces Proton's `ntdll.dll` with the pr47 patched version
