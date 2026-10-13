@@ -268,8 +268,7 @@ This repo is a collaboration between **Jeremiah** ([jeremiah0](https://github.co
 - All testing on real hardware: playing matches, judging performance and stability, checking what each
   in-game setting actually does (for example, catching that a value meant FSR 2.2, not 1.0).
 - The tested DroidDeck settings, the vector TSO experiment, and the `929PJ` shader warm-up tip.
-- Every decision: what to change, what to ship, the 90 fps cap, turning FSR off, and when to release.
-
+- Committing changes and compiling releases
 
 **AI (Claude Opus):**
 - Wrote the scripts: the installer, `verify.sh`, `pull.sh`, `release.sh`, `owconfig.py` and `bytediff.py`.
