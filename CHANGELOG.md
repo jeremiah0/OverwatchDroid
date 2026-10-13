@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- README cut to about half and rewritten in a friendlier first-person voice. The reference material
+  (settings tables, FEX settings, how it works, the ntdll patch, files, licenses) moved to `docs/DETAILS.md`.
 - README: who made what, human vs AI (Claude Opus).
 - README: link to a video of it running on the Thor.
 - Frame rate cap raised from 30 to 90 fps. The README explains it's a ceiling; expect 30 to 60 in matches.
