@@ -22,8 +22,14 @@ This is a community workaround, not an official fix. Know these before you try i
   of code. It looks like a port of [proton-wine PR #47](https://github.com/GameNative/proton-wine/pull/47)'s
   ntdll changes, but it isn't built from that PR's source, and its origin isn't known. It runs inside every
   game on Proton Experimental (ARM64). The exact bytes it changes are in `patches/ntdll-pr47.bytediff`.
-- **Your Blizzard account is at your own risk.** Overwatch has anti-cheat, and this runs it under an emulator
-  with a modified system DLL. No bans are known, but very few people have tried it. Consider a spare account first.
+- **Play with discretion: your Blizzard account is your responsibility.** This setup goes beyond official
+  Proton and FEX, with a patched `ntdll.dll` and a custom FEX build. Still, people play Overwatch through Proton
+  on the Steam Deck, where it's unofficially supported ([rated Playable](https://www.pcgamesn.com/overwatch-2/steam-deck)),
+  and its anti-cheat [works under Proton](https://www.gamingonlinux.com/itemdb/app/17974/overwatch-2).
+  Bans for compatibility layers are rare, and Blizzard has reversed them before: Linux
+  players banned in 2018 for using Wine and DXVK had the bans
+  [overturned as a false positive](https://www.phoronix.com/news/Blizzard-Banning-DXVK-Wine). Nobody has
+  tested this exact setup at scale, so consider a spare account first.
 - **It's only been tested on one device:** an AYN Thor with DroidDeck 0.4.0 and one Proton build. Other
   Snapdragon devices should work, but nobody has confirmed it, and the recommended settings are tuned for the Thor.
 
@@ -105,6 +111,10 @@ on the next frame while the GPU draws this one. That helps because FEX makes Ove
 of a little input lag. If you'd rather have the lag back down, turn Reduce Buffering on in Options > Video.
 
 After installing, Options > Video > Graphics Quality > High Quality Upsampling should say Default.
+
+The frame rate cap is 90 fps, but expect about 30 to 60 in matches. The high cap is there so it never holds the
+game back; FEX's CPU cost sets the real limit. If the frame rate swings too much, a lower cap such as 60 can
+feel smoother.
 
 Overwatch only saves settings when you quit from its menu. If the game gets killed or you close DroidDeck,
 changes are lost. Running the installer again puts its graphics settings back.

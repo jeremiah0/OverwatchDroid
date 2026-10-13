@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-- Frame rate cap raised from 30 to 90 fps.
+- Frame rate cap raised from 30 to 90 fps. The README explains it's a ceiling; expect 30 to 60 in matches.
+- README: fuller account-risk note (Steam Deck status, anti-cheat under Proton, the 2018 Linux bans Blizzard reversed).
 - README: "Read this first" section on the unreviewed ntdll patch, Blizzard account risk and single-device
   testing, and a Credits section with thanks and the licenses of the bundled files.
 - README and installer no longer say other games are unaffected: the patched `ntdll.dll` is shared by every
