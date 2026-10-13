@@ -260,7 +260,7 @@ Maintainer scripts:
 
 ### Who made this: human and AI
 
-This repo is a collaboration between **Jeremiah Ownby** ([jeremiah0](https://github.com/jeremiah0)) and
+This repo is a collaboration between **Jeremiah** ([jeremiah0](https://github.com/jeremiah0)) and
 **Claude Opus** (Anthropic's AI model, through Claude Code). Every commit is marked `Co-Authored-By: Claude Opus`.
 
 **Myself:**
