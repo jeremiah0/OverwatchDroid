@@ -10,7 +10,7 @@
 - Preview, diagnostic mode, exact backups, atomic settings replacement and guarded restore; controls/audio and unrelated settings are kept.
 - Legacy JSON merge preserves custom Overwatch keys and refuses corrupt input. Every bundled binary is checksum-verified before ADB use; unknown ntdll verification fails.
 - Installer/recovery tests and Linux/macOS CI. Hardware testing and performance measurement remain outstanding.
-- Updated setup guide and dated primary-source research covering DroidDeck 0.6.7/0.6.9, newer DroidDeck-Proton, and experimental non-Adreno work.
+- Shorter README with the extra install options in a separate setup guide.
 
 ## Earlier unreleased documentation changes
 
