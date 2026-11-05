@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-# Install the Overwatch patch on a connected device. Same as scripts/install.sh; see --help.
+# Set up Overwatch inside DroidDeck, or select an explicit legacy path; see --help.
 exec bash "$(dirname "$0")/scripts/install.sh" "$@"

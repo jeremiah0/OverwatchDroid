@@ -17,6 +17,7 @@ desired.tsv columns: appid, proton name, proton version, component, path, sha256
 import json
 import os
 import sys
+from pathlib import Path
 
 APPID = "2357570"
 COMPONENTS = {"ntdll", "fex"}
@@ -25,7 +26,7 @@ COMPONENTS = {"ntdll", "fex"}
 def read_lines(path):
     if not os.path.exists(path):
         return []
-    lines = open(path).read().splitlines()
+    lines = Path(path).read_text().splitlines()
     return [l for l in lines if l.strip()]
 
 
@@ -47,13 +48,17 @@ def merge(dev_tsv, repo_tsv, dev_env, repo_env, out_dir, store_dirs):
 
 
 def merge_env(dev_env, repo_env, out_env):
-    try:
-        env = json.load(open(dev_env))
-    except (OSError, ValueError):
-        env = {}
+    # An absent file is fine; a damaged existing file must never be replaced by {}.
+    text = Path(dev_env).read_text() if os.path.exists(dev_env) else ""
+    env = json.loads(text) if text.strip() else {}
+    if not isinstance(env, dict) or env.get("version", 1) != 1:
+        raise ValueError("Unsupported game-environment.json; no changes written")
     env.setdefault("version", 1)
     env.setdefault("shared", {})
-    env.setdefault("games", {})[APPID] = json.load(open(repo_env))["games"][APPID]
+    games = env.setdefault("games", {})
+    if not isinstance(games, dict) or not isinstance(games.get(APPID, {}), dict):
+        raise ValueError("Invalid per-game environment; no changes written")
+    games.setdefault(APPID, {}).update(json.loads(Path(repo_env).read_text())["games"][APPID])
     with open(out_env, "w") as f:
         json.dump(env, f, separators=(",", ":"))
 
@@ -74,7 +79,7 @@ def stock_ntdll(dev_tsv, out_tsv, stock_hash, stock_source):
         print("desired.tsv: no Overwatch ntdll rows, left as is")
 
 
-def settings(dev_ini, repo_ini, out_ini):
+def render_settings(text, preset):
     def parse(text):
         section, out = None, {}
         for line in text.splitlines():
@@ -85,8 +90,7 @@ def settings(dev_ini, repo_ini, out_ini):
                 out.setdefault(section, {})[line.split("=", 1)[0].strip()] = line
         return out
 
-    wanted = parse(open(repo_ini, encoding="utf-8-sig").read())
-    text = open(dev_ini, encoding="utf-8-sig").read() if os.path.exists(dev_ini) else ""
+    wanted = parse(preset)
     lines = text.splitlines()
 
     for section, keys in wanted.items():
@@ -105,9 +109,15 @@ def settings(dev_ini, repo_ini, out_ini):
             else:
                 lines[hit] = new
 
-    with open(out_ini, "w", newline="\r\n") as f:
-        f.write("\n".join(lines) + "\n")
-    print("Settings_v0.ini: " + ", ".join(v.strip() for k in wanted.values() for v in k.values()))
+    return "\r\n".join(lines) + "\r\n"
+
+
+def settings(dev_ini, repo_ini, out_ini):
+    text = Path(dev_ini).read_text(encoding="utf-8-sig") if os.path.exists(dev_ini) else ""
+    preset = Path(repo_ini).read_text(encoding="utf-8-sig")
+    with open(out_ini, "w", newline="") as f:
+        f.write(render_settings(text, preset))
+    print("Settings_v0.ini: graphics updated; other settings kept")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,18 @@
 # Changelog
 
-## Unreleased
+## Unreleased — November refresh
+
+- Rootless setup inside DroidDeck's Linux desktop; the October ADB/binary installer is now `--legacy`.
+- Rootless exact-build DLL/FEX fallback with a five-file backup, verification, rollback on failed writes and full runtime restore. It never patches a different Proton build.
+- Current Proton/FEX and GPU drivers stay selected. The normal setup no longer pins the October runtime or forces DX12, vector TSO off, upscaling, or buffering settings.
+- Balanced, cool and performance profiles with explicit DX11/DX12 choices and informational GPU detection.
+- Find existing Overwatch settings across Steam/Battle.net prefixes, x86-64 Steam, registered libraries and SD storage; explicit prefix/settings selection is supported.
+- Preview, diagnostic mode, exact backups, atomic settings replacement and guarded restore; controls/audio and unrelated settings are kept.
+- Legacy JSON merge preserves custom Overwatch keys and refuses corrupt input. Every bundled binary is checksum-verified before ADB use; unknown ntdll verification fails.
+- Installer/recovery tests and Linux/macOS CI. Hardware testing and performance measurement remain outstanding.
+- Shorter README with the extra install options in a separate setup guide.
+
+## Earlier unreleased documentation changes
 
 - README cut to about half and rewritten in a friendlier first-person voice. The reference material
   (settings tables, FEX settings, how it works, the ntdll patch, files, licenses) moved to `docs/DETAILS.md`.

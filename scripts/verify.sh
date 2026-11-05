@@ -4,15 +4,15 @@ set -euo pipefail
 source "$(dirname "$0")/env.sh"
 cd "$REPO"
 
-ntdll=$(adbsu "sha256sum \"$PROTON_DIR/$NTDLL_REL\" 2>/dev/null" | awk '{print $1}')
+status=0
+ntdll=$(adbsu "sha256sum \"$PROTON_DIR/$NTDLL_REL\" 2>/dev/null" | awk '{print $1}' || true)
 case $ntdll in
   "$NTDLL_PR47")  echo "Proton ntdll.dll: pr47 (patched)" ;;
   "$NTDLL_STOCK") echo "Proton ntdll.dll: stock" ;;
-  *)              echo "Proton ntdll.dll: unknown (${ntdll:-missing})" ;;
+  *)              echo "Proton ntdll.dll: unknown (${ntdll:-missing})"; status=1 ;;
 esac
 
 # DroidDeck deletes store dirs nothing points at any more, so missing ones aren't an error.
-status=0
 for d in "${STORE_DIRS[@]}"; do
   files=$(grep "  \./$d/" SHA256SUMS | awk '{print $2}' | tr '\n' ' ')
   device=$(adbsu "cd $COMPONENTS/store 2>/dev/null && [ -d $d ] && sha256sum $files" | tr -d '\r' || true)
