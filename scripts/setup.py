@@ -255,7 +255,8 @@ def main():
     if gpu in ("mali", "xclipse", "powervr"):
         print("This GPU needs a compatible experimental DroidDeck build/driver. These settings alone cannot enable it.\n"
               "If Steam already renders correctly, DX11 is an option to test; DX12 is not forced.\n"
-              "Setup guide: https://github.com/The412Banner/droiddeck-nonadreno-drivers")
+              "Unofficial community test builds and drivers (third-party, not reviewed by this project):\n"
+              "  https://github.com/The412Banner/droiddeck-nonadreno-drivers")
     print("Use a current DroidDeck-Proton and its bundled FEX first; the October DLL/FEX files are not installed here.")
     path = choose_settings(args)
     print(f"Overwatch settings:\n  {path}")

@@ -2,4 +2,4 @@
 # Regenerate SHA256SUMS for everything under store/.
 set -euo pipefail
 cd "$(dirname "$0")/../store"
-find . -type f ! -name .complete | sort | xargs shasum -a 256 > ../SHA256SUMS
+find . -type f ! -name .complete ! -name .DS_Store | sort | xargs shasum -a 256 > ../SHA256SUMS

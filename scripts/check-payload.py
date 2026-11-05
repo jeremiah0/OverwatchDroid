@@ -16,7 +16,8 @@ def verify(repo):
         expected.add(path)
         if hashlib.sha256(path.read_bytes()).hexdigest() != checksum:
             raise ValueError(f"Bundled file failed its checksum: {name}")
-    actual = {p.resolve() for p in root.rglob("*") if p.is_file() and p.name != ".complete"}
+    # Finder drops .DS_Store into any folder it opens; it never reaches a device.
+    actual = {p.resolve() for p in root.rglob("*") if p.is_file() and p.name not in (".complete", ".DS_Store")}
     if actual != expected or not expected:
         raise ValueError("The bundled files and SHA256SUMS do not match")
 
