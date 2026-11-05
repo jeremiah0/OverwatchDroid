@@ -1,4 +1,6 @@
-# Overwatch Droid: the details
+# Overwatch Droid: legacy technical details
+
+> This page describes the October binary installer (`bash install.sh --legacy`). The current rootless setup only edits graphics settings; see the [main guide](../README.md).
 
 The nuts and bolts behind the [README](../README.md): exactly what the installer sets, how DroidDeck
 handles it, what the ntdll patch changes, and what's in the repo.

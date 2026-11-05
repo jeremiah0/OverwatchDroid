@@ -1,130 +1,118 @@
 # Overwatch Droid
 
-I got Overwatch 2 running on my AYN Thor through DroidDeck, Proton Experimental (ARM64) and FEX, and wrapped
-the whole setup into one install script so you can try it too.
+A small setup helper for playing Overwatch through [DroidDeck](https://github.com/Droid-Deck/DroidDeck).
+It started with a working AYN Thor setup. The new installer makes it easier to try sensible graphics settings on other phones and keeps a backup so you can go back.
 
-[![Overwatch Droid final performance update](https://i.ytimg.com/vi/IrvZEAGfkqI/hqdefault.jpg)](https://www.youtube.com/watch?v=IrvZEAGfkqI)
+**Start with current DroidDeck-Proton.** It now includes Blizzard-loader fixes in its bundled FEX, although the complete Wine-side Overwatch fix has not been verified in that runtime. The normal installer adjusts Overwatch's graphics; it leaves your Proton, FEX and GPU driver in place. The old October binary patch is still available as a separate [legacy option](docs/LEGACY.md).
 
-▶ [Watch it running on the Thor](https://www.youtube.com/watch?v=IrvZEAGfkqI)
+[Watch the original Thor setup](https://www.youtube.com/watch?v=IrvZEAGfkqI)
 
-The installer does three things:
+## Get started on your phone
 
-- Swaps Proton's `ntdll.dll` for a patched one that gets Overwatch past Blizzard's loader
-- Installs a FEX build with fixes for Blizzard games, plus tuned FEX settings for Overwatch
-- Sets Overwatch to Low, DirectX 12, 50% render scale, FSR off and a 90 fps cap
+No Android root, USB cable or computer is needed for this path. Run it in **DroidDeck's Linux desktop**, not Termux or Android's ADB shell.
 
-## Read this first
-
-This is a community workaround, not an official fix, so a few honest warnings:
-
-- **The patched `ntdll.dll` hasn't been reviewed, and I don't know who made it.** It's a small binary patch
-  (161 bytes) that looks like a port of [proton-wine PR #47](https://github.com/GameNative/proton-wine/pull/47),
-  not a build from its source. It goes into Proton itself, so every game you run on Proton Experimental (ARM64)
-  uses it. It only changes what ARM64EC tells FEX about memory and CPU flags, so other games are unlikely to
-  notice, and `bash install.sh --uninstall` puts the stock file back.
-- **Play with discretion; your Blizzard account is your call.** This goes beyond official Proton and FEX. That
-  said, people play Overwatch through Proton on the Steam Deck, where it's unofficially supported
-  ([rated Playable](https://www.pcgamesn.com/overwatch-2/steam-deck)), its anti-cheat
-  [works under Proton](https://www.gamingonlinux.com/itemdb/app/17974/overwatch-2), and bans are rare. Blizzard
-  has even reversed them before: Linux players banned in 2018 for using Wine and DXVK got them
-  [overturned as a false positive](https://www.phoronix.com/news/Blizzard-Banning-DXVK-Wine). Still, not many
-  people have tried this exact setup, so a spare account is a good idea at first.
-- **I've only tested it on my Thor** (DroidDeck 0.4.0, one Proton build). Other Snapdragon devices should work,
-  but I haven't confirmed it.
-
-The installer itself plays it safe. It only touches DroidDeck's app folder and `/data/local/tmp`, checks file
-hashes before replacing anything, shows you what it'll change, asks first, and backs everything up.
-
-## Before you start
-
-You'll need:
-
-- A **rooted** Android device (Magisk) with **USB debugging** on
-- **[DroidDeck](https://github.com/Droid-Deck/DroidDeck)** (any variant) with Steam signed in
-- **Proton Experimental (ARM64)** build `experimental-11.0-20261008-arm64`. The patch only fits this build.
-- **Overwatch 2** installed and launched once with that Proton
-- A **Mac or Linux** computer with `adb` and `python3`
-  - Mac: `brew install android-platform-tools` (python3 comes with `xcode-select --install`)
-  - Debian/Ubuntu: `sudo apt install adb python3`
-  - Windows might work through WSL, but I haven't tried it.
-
-## Install
-
-1. Grab the newest zip from the [tags page](https://github.com/jeremiah0/OverwatchDroid/tags) and unzip it.
-2. Plug in your device and run this from the unzipped folder:
+1. Update DroidDeck and its runtime from the [official project](https://github.com/Droid-Deck/DroidDeck/releases). Install a current **DroidDeck-Proton** through Components, select it for Overwatch, and use its bundled FEX rather than an old custom FEX override. See [migration](#coming-from-the-old-patch) if you used this patch before.
+2. Launch Overwatch once and quit from its own menu. If it cannot reach the menu, resolve the runtime/driver issue first; graphics setup cannot replace a missing loader fix.
+3. Download this repository's ZIP using **Code → Download ZIP**, extract it in the Linux desktop, then open that folder in Konsole. Run:
 
    ```sh
    bash install.sh
    ```
 
-   It'll find your device and DroidDeck, check everything, show what it's about to change and ask before
-   doing anything. If DroidDeck is open it offers to close it. If Magisk pops up on the device, tap **Grant**.
+Choose a profile, review the changes, and type `y` to apply them. Setup prints the backup location and an undo command. It finds existing Steam and Battle.net settings, including Steam's registered libraries and DroidDeck's SD-card libraries. If it finds several installs, it asks which one you mean.
 
-3. Open DroidDeck and play Overwatch with Proton Experimental (ARM64).
+**The new installer has automated tests but still needs phone testing.** The original October setup was tested on the Thor. No new device compatibility or FPS improvement is claimed yet.
 
-If Steam updates or verifies Proton Experimental (ARM64), the stock `ntdll.dll` comes back. Just run the
-installer again; it's always safe to rerun.
+## Choose how you want to play
 
-Other options: `--dry-run` shows the changes without making them, `--uninstall` puts the stock `ntdll.dll`
-back, and `--yes` skips the questions. `bash scripts/verify.sh` shows what's installed right now.
+| Profile | Frame cap | Render scale | Good starting point for |
+|---|---:|---:|---|
+| `balanced` (default) | 60 | 67% | Everyday play |
+| `cool` | 30 | 50% | Lower rendering load and sustained sessions |
+| `performance` | 90 | 50% | Faster devices with active cooling |
 
-## My settings
+These are low-graphics starting points, not benchmark results or promised frame rates. Your controls, audio, current graphics API, buffering and upscaling choices are preserved. Render scale is relative to your chosen display resolution; try 1280×720 first, then adjust after a practice match.
 
-These are what I run on the Thor. In DroidDeck, open Settings under Play Steam; most take effect the next time
-Steam starts.
+```sh
+bash install.sh --profile cool
+bash install.sh --profile balanced --renderer dx11
+bash install.sh --profile performance --renderer dx12
+```
 
-| Where | Setting | Value |
+The default is **keep your current renderer**. DX11 uses DXVK; DX12 uses vkd3d-proton. Test both only if your driver supports them. A profile doesn't add Vulkan features or install a driver.
+
+For tuning, change one thing at a time. Compare the same practice scene after shader warm-up and again after ten minutes. Use real rendered FPS and frame pacing, with frame generation off for the comparison. If the phone gets slower as it heats up, try `cool` before increasing clocks. Leave FEX's memory-ordering defaults intact initially; the old vector-TSO-off tweak is not a universal stability recommendation.
+
+## Which GPUs can I try?
+
+| GPU | DroidDeck route | What this setup does |
 |---|---|---|
-| Session > Performance | Override Steam's core choice | Off |
-| Session > Performance | Game cores | All (cpu0 to cpu7) |
-| Session > Performance | Hold the GPU at its top clock | On |
-| Session > Performance | gamescope: realtime GPU queue | On |
-| Session > Performance | droiddeck-ntsync (experimental) | On |
-| Settings sheet | Upscaler | Snapdragon GSR (quality), sharpness 75% |
-| Settings sheet | Frame generation | Win-FG 2× |
-| Display | Resolution | 1280x720 |
-| Components | GPU driver | Mesa Turnip v26.3.0-20261012 |
+| Adreno | Turnip, with support depending on the chip and driver | Keeps the driver and renderer; offers all three profiles |
+| Mali / Immortalis | Experimental MaliBridge, Venus or matching PanVK driver pair | Keeps the working graphics stack; allows an explicit DX11 trial |
+| Samsung Xclipse | Experimental RADV driver pair / system route | Does not apply Adreno-only settings |
+| PowerVR | Experimental system-driver route | Does not apply Adreno-only settings |
+| Unknown | Check the exact GPU and DroidDeck build | Keeps the renderer; never guesses a driver |
 
-Overwatch eats a lot of CPU through FEX, so give it every core. Frame generation doubles what's on screen for a
-bit of GPU and a little input lag. I also used dxvk 3.1.1 and vkd3d-proton 3.0a.
+On November 5, 2026, the broader non-Adreno integration [PR #2029](https://github.com/Droid-Deck/DroidDeck/pull/2029) was still open and awaiting device validation. The [community non-Adreno guide](https://github.com/The412Banner/droiddeck-nonadreno-drivers) documents test builds and device-specific limitations. **Those reports do not establish Overwatch compatibility.** First get Steam rendering correctly on the matching graphics stack.
 
-The 90 fps cap is just a ceiling so it never holds the game back. Expect about 30 to 60 in matches. If it feels
-choppy, a lower cap like 60 can be smoother. After installing, High Quality Upsampling under Options > Video
-should say Default.
+The installer identifies the GPU when `vulkaninfo` is available. This is informational, not a feature test. You can specify `--gpu mali`, `--gpu xclipse`, or `--gpu powervr` if detection is unavailable. It won't download experimental drivers automatically.
 
-Overwatch only saves settings when you quit from its menu, so if it gets killed, changes are lost. Running the
-installer again puts its settings back. The full list of what it sets is in [the details](docs/DETAILS.md).
+## Check, preview, undo
 
-## Tips
+```sh
+bash install.sh --doctor
+bash install.sh --profile cool --dry-run
+bash install.sh --restore '/path/printed/by/setup'
+```
 
-- **Close other apps first.** If Overwatch closes mid-match with no error, Android ran out of memory and killed
-  DroidDeck (`adb logcat -d | grep lowmemorykiller` will show it). Browsers, YouTube, emulators and screen
-  recording all eat memory.
-- **Keep it cool.** The CPU sits at 90 to 95 °C in a match, so max out the fan and performance mode.
-- **Turn off the Steam overlay** for Overwatch (Properties > General). It saves some memory and CPU.
-- **Warm up shaders** by loading custom game code `929PJ` before you play, so effects don't stutter the
-  first time you see them in a match.
+A dry run writes nothing. Every changed install saves the original file and its checksum before replacing it. Repeating an unchanged install makes no extra backup. Restore checks the backup and stops if you have edited your settings since installation, so it won't silently discard a newer save.
 
-## Troubleshooting
+For a custom prefix or another Windows user:
 
-| Problem | Fix |
+```sh
+bash install.sh --prefix '/path/to/compatdata/2357570/pfx'
+bash install.sh --settings '/path/to/Settings_v0.ini'
+```
+
+Use `--yes` for unattended setup, with an explicit profile and location when needed. `--help` lists all options. Python 3 is required; if it is missing, install `python3` using your Linux desktop's package manager.
+
+## Coming from the old patch
+
+1. In Overwatch's DroidDeck profile, select current DroidDeck-Proton and its bundled FEX. Remove your old custom FEX selection and review/reset the old per-game `FEX_*` overrides through DroidDeck's UI. `--doctor` can flag Steam Overwatch's environment overrides, but does not remove them.
+2. Try launching with the newer runtime before applying a graphics profile. The presence of upstream loader fixes is a reason to test it, not a guarantee that every Overwatch update works.
+3. If you want to restore the old patched Proton too, the rooted computer command remains:
+
+   ```sh
+   bash install.sh --legacy --uninstall
+   ```
+
+That restores only the exact October `ntdll.dll`; it keeps the legacy FEX and settings. Never copy that DLL into a newer Proton. The modern setup does not automatically undo changes made by the old installer.
+
+Need the original workaround for `experimental-11.0-20261008-arm64`? You can now apply its **DLL and FEX files without Android root** from DroidDeck's Linux desktop:
+
+```sh
+bash install.sh --legacy-runtime "$HOME/.local/share/Steam/steamapps/common/Proton Experimental (ARM64)" --dry-run
+```
+
+Close Windows games and Battle.net, then repeat without `--dry-run`. Keep **bundled FEX** selected for that Proton in DroidDeck. This checks the exact version and DLL hash, backs up all five replaced files, and verifies the result. If a write fails, it attempts to roll back. It prints a `--restore-runtime` command that restores both the DLL and the original FEX; restore refuses files changed by a later Proton update. This is the same old binary payload, not a new build, and it affects every game using this Proton. Other Proton versions are rejected.
+
+Graphics profiles are a separate step: run `bash install.sh` after the game has saved its settings. FEX environment choices remain in DroidDeck's UI; start with TSO enabled and review the historical settings in the [legacy details](docs/DETAILS.md#fex-settings) if necessary.
+
+The original computer route is still `bash install.sh --legacy` on a Mac/Linux computer with a rooted phone. Both routes check every bundled binary hash before applying it. Read the [legacy guide](docs/LEGACY.md) for the binary's provenance and limitations.
+
+## If something doesn't work
+
+| What you see | What to try |
 |---|---|
-| `adb not found` | Install it (see [Before you start](#before-you-start)). |
-| `no device found` | Turn on USB debugging in Developer options and use a data cable. |
-| `the device hasn't allowed this computer yet` | Unlock the device and tap Allow on the USB debugging prompt. |
-| `no root access` | In Magisk > Superuser, allow Shell. |
-| `found several devices` / `several DroidDeck installs` | Pick one when asked. |
-| `need Proton Experimental (ARM64) build …` | Your Proton is a different build. See [When Proton updates](#when-proton-updates). |
-| Graphics were "skipped" | Launch Overwatch once, quit from its menu, then run the installer again. |
-| Graphics went back to high | Overwatch was killed before it could save. Run the installer again. |
-| Overwatch closes mid-match | Out of memory. See [Tips](#tips). |
+| No settings found | Use DroidDeck's Linux desktop; launch and quit Overwatch once, or pass `--prefix`. |
+| More than one install | Select one interactively, or pass `--prefix` / `--settings`. |
+| Black screen before Steam opens | Check DroidDeck's GPU/driver setup first. These game settings cannot fix that. |
+| Overwatch won't reach its menu | Check the selected Proton/FEX and launch log; don't apply an old DLL to a new build. |
+| Game closes during play | Check DroidDeck's shared logs for memory pressure, driver errors or game crashes. Close other apps and try the lower-load profile. |
+| Settings revert | Quit Overwatch from its menu before running setup, and check that you selected the prefix you actually launch. |
+| Restore says settings changed | Compare the backup with your current file. Copy it manually only if you want to discard the later changes. |
 
-## When Proton updates
-
-The patch only fits `experimental-11.0-20261008-arm64`, so on a newer build the installer stops without
-changing anything. You can try applying the patch to the new build yourself; see
-[the ntdll patch](docs/DETAILS.md#the-ntdll-patch). Hopefully the fixes land upstream and this whole dance
-goes away.
+[Research and source links](docs/RESEARCH-2026-11-05.md) · [Legacy technical details](docs/DETAILS.md)
 
 ## Credits
 
@@ -143,7 +131,7 @@ This only works because of other people's work. Thank you all <3
 
 ### Who made this
 
-I made this together with **Claude Opus** (Anthropic's AI, through Claude Code), and every commit says so.
+The original Thor patch and guide were made with **Claude Opus** (through Claude Code). The rootless setup, recovery tests and November compatibility research were developed with **OpenAI Codex**. Hardware testing described below belongs to the original Thor setup.
 
 - **Me ([jeremiah0](https://github.com/jeremiah0)):** got Overwatch running on my Thor (the repo started as a
   snapshot of that setup), did all the testing on real hardware, like playing matches and checking what each
