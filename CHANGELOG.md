@@ -8,7 +8,7 @@
 - Balanced, cool and performance profiles with explicit DX11/DX12 choices and informational GPU detection.
 - Find existing Overwatch settings across Steam/Battle.net prefixes, x86-64 Steam, registered libraries and SD storage; explicit prefix/settings selection is supported.
 - Preview, diagnostic mode, exact backups, atomic settings replacement and guarded restore; controls/audio and unrelated settings are kept.
-- Legacy JSON merge preserves custom Overwatch keys and refuses corrupt input. Every bundled binary is checksum-verified before ADB use; unknown ntdll verification fails.
+- Legacy JSON merge preserves custom Overwatch keys and refuses corrupt input. Every bundled binary is checksum-verified before ADB use, and Finder's `.DS_Store` files no longer fail that check; unknown ntdll verification fails.
 - Installer/recovery tests and Linux/macOS CI. Hardware testing and performance measurement remain outstanding.
 - Shorter README with the extra install options in a separate setup guide.
 

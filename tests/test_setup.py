@@ -2,6 +2,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -127,6 +128,7 @@ class SetupTests(unittest.TestCase):
     def test_mali_does_not_force_turnip_or_dx12(self):
         result = self.install('--gpu', 'mali', '--profile', 'cool')
         self.assertIn('experimental', result.stdout)
+        self.assertIn('Unofficial', result.stdout)
         self.assertIn('GraphicsAPI = "Dx11"', self.target.read_text())
         self.assertIn('DesiredFrameRate = "30"', self.target.read_text())
 
@@ -264,6 +266,29 @@ class SetupTests(unittest.TestCase):
         (root / 'SHA256SUMS').write_text(setup.digest(b'original') + '  ./file\n')
         with self.assertRaises(ValueError):
             payload.verify(root)
+
+    def test_finder_metadata_is_ignored_but_other_extras_are_not(self):
+        root = self.root / 'payload'
+        (root / 'store/dir').mkdir(parents=True)
+        (root / 'store/file').write_bytes(b'original')
+        (root / 'SHA256SUMS').write_text(setup.digest(b'original') + '  ./file\n')
+        (root / 'store/.DS_Store').write_bytes(b'finder')
+        (root / 'store/dir/.DS_Store').write_bytes(b'finder')
+        payload.verify(root)
+        (root / 'store/dir/extra.dll').write_bytes(b'planted')
+        with self.assertRaises(ValueError):
+            payload.verify(root)
+
+    def test_regenerated_sums_leave_out_finder_metadata(self):
+        root = self.root / 'payload'
+        (root / 'scripts').mkdir(parents=True)
+        (root / 'store').mkdir()
+        shutil.copy(REPO / 'scripts/sums.sh', root / 'scripts/sums.sh')
+        (root / 'store/file').write_bytes(b'original')
+        (root / 'store/.DS_Store').write_bytes(b'finder')
+        subprocess.run(['bash', str(root / 'scripts/sums.sh')], check=True)
+        self.assertNotIn('.DS_Store', (root / 'SHA256SUMS').read_text())
+        payload.verify(root)
 
     def test_help_does_not_need_adb(self):
         result = subprocess.run(['bash', str(REPO / 'install.sh'), '--help'], capture_output=True, text=True)
